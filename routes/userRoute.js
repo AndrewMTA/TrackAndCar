@@ -1,5 +1,5 @@
 const router = require("express").Router();
-
+const User = require("../model/User")
 const Car = require("../model/Car");
 const jwt = require('jsonwebtoken')
 
@@ -21,35 +21,32 @@ router.get("/", function (req, res) {
   });
 });
 
+router.post('/login', async(req, res) => {
+  const {email, password} = req.body;
+  try {
+    const user = await User.findByCredentials(email, password);
+    res.json(user)
+  } catch (e) {
+    res.status(400).send(e.message)
+  }
+})
+
+
 router.post("/", async (req, res) => {
   try {
     const {
       email,
       password,
-      firstName,
-      lastName,
-      userRole,
-      lookingcrowdfund,
-      companyName,
-      goalAmount,
-      pitchDeckURL,
-      picture,
+    
     } = req.body;
     //console.log(req.body);
     const user = await User.create({
       email,
       password,
-      firstName,
-      lastName,
-      userRole,
-      lookingcrowdfund,
-      companyName,
-      goalAmount,
-      pitchDeckURL,
-      picture,
+    
     });
 
-  sendToken(user, 201, res )
+    res.status(200).json({ user });
   } catch (e) {
     let msg;
     if (e.code == 11000) {

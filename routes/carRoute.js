@@ -24,7 +24,44 @@ router.post("/pic", multerUploadS3.any(), async (req, res, next) => {
 res.send("ok")
 });
 
-router.post("/", multerUploadS3.any(), (req, res) => {
+router.get('/', async(req, res)=> {
+  try {
+    const sort = {'_id': -1}
+    const products = await Car.find().sort(sort);
+    res.status(200).json(products);
+  } catch (e) {
+    res.status(400).send(e.message);
+  }
+})
+
+
+
+router.get("/listings/:id", async (req, res) => {
+
+  const {listUser} = req.params;
+   const listCars = await Car.find(listUser)
+   res.json(listCars)
+    
+  
+});
+
+
+
+
+router.post('/', async(req, res)=> {
+  try {
+    const {make, model, description, price, images: pic, listUser } = req.body;
+    const car = await Car.create({make, model, description, price, pic, listUser });
+    const carListing = await Car.find();
+    
+    res.status(201).json(carListing);
+  } catch (e) {
+    res.status(400).send(e.message);
+  }
+})
+
+
+router.post("/3", multerUploadS3.any(), (req, res) => {
  try{ const { make, model, year, price, description } = req.body;
   let pic = null;
   if (req.files > 0) {

@@ -4,6 +4,11 @@ const bcrypt = require('bcrypt');
 
 
 const CarSchema = new mongoose.Schema({
+  listUser: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 
   firstName: {
     type: String
@@ -22,11 +27,11 @@ const CarSchema = new mongoose.Schema({
     type: Number
   },
  price: {
-    type: Number,
+    type: String,
     default: 10000
   },
   pic: {
-    type: String,
+    type: Array,
   },
 
   Youtube: {
@@ -37,14 +42,14 @@ const CarSchema = new mongoose.Schema({
     type: String,
   },
   miles: {
-    type: Number,
+    type: String,
   },
 
   specs: {
     type: Number,
   },
 
-}, );
+}, {minimize: false});
 
 
 const Car = mongoose.model('Car', CarSchema);
